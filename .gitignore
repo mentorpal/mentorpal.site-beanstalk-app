@@ -12,7 +12,7 @@ docker-compose.override-images.yml
 *.zip
 .venv
 .env
-.opentutor*
+.mentorpal*
 models
 archive
 
