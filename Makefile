@@ -36,7 +36,7 @@ build/deploy:
 	# into a build/deploy folder.
 	@if [ -z "$(EFS_FILE_SYSTEM_ID)" ] ; then \
 		echo "required env var EFS_FILE_SYSTEM_ID unset.";\
-		echo "See https://github.com/opentutor/terraform-opentutor-aws-beanstalk/blob/main/template/README.md"; \
+		echo "See https://github.com/mentorpal/terraform-mentorpal-aws-beanstalk/blob/main/template/README.md"; \
 		false ; \
 	fi
 	mkdir -p build/deploy
@@ -52,9 +52,8 @@ build/deploy:
 		&& mv efs.config.tmp efs.config
 	cp -r ./nginx build/deploy/bundle/nginx
 	mkdir -p build/deploy/bundle/classifier
-	# for now at least, packaging up our default model
-	# and word2vec.bin directly into the deploy.zip for beanstalk
-	cp -r ./models_deployed build/deploy/bundle/classifier/models_deployed
+	# for now at least word2vec.bin 
+	# directly into the deploy.zip for beanstalk
 	cp -r ./shared build/deploy/bundle/classifier/shared
 
 deploy.zip:
