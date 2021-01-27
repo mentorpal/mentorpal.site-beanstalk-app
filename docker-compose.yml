@@ -1,12 +1,16 @@
 version: '3.2'
 services:
   admin:
-    image: uscictdocker/mentor-admin:2.0.0-alpha.3
+    image: uscictdocker/mentor-admin:2.0.0-alpha.5
     environment:
       - NODE_ENV
       - GRAPHQL_ENDPOINT=http://graphql:3001/graphql
     depends_on:
       - graphql
+    volumes:
+      - type: bind
+        source: ./build/run/.env
+        target: /app/.env
   classifier:
     image: uscictdocker/mentor-classifier-api:2.0.0-alpha.1
     depends_on:
