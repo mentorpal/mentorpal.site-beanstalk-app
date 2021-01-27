@@ -1,4 +1,4 @@
-ENV?=dev
+ENV?=test
 EFS_FILE_SYSTEM_ID?=
 NODE_ENV?=$(ENV)
 LOG_LEVEL_DIALOG?=info
