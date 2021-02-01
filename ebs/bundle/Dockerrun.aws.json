@@ -54,7 +54,7 @@
     },
     {
       "name": "classifier",
-      "image": "uscictdocker/mentor-classifier-api:2.0.0-alpha.2",
+      "image": "uscictdocker/mentor-classifier-api:2.0.0-alpha.3",
       "environment": [
         {
           "name": "STATUS_URL_FORCE_HTTPS",
@@ -141,7 +141,7 @@
     },
     {
       "name": "training",
-      "image": "uscictdocker/mentor-classifier:2.0.0-alpha.2",
+      "image": "uscictdocker/mentor-classifier:2.0.0-alpha.3",
       "entryPoint": ["/app/training_worker.sh"],
       "environment": [
         {
