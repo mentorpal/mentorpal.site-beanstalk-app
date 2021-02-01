@@ -35,7 +35,7 @@
   "containerDefinitions": [
     {
       "name": "admin",
-      "image": "uscictdocker/mentor-admin:2.0.0-alpha.7",
+      "image": "uscictdocker/mentor-admin:2.0.0-alpha.8",
       "essential": true,
       "memory": 1024,
       "mountPoints": [
@@ -59,6 +59,10 @@
         {
           "name": "STATUS_URL_FORCE_HTTPS",
           "value": "true"
+        },
+        {
+          "name": "GRAPHQL_ENDPOINT",
+          "value": "http://graphql:3001/graphql"
         }
       ],
       "essential": true,
@@ -83,7 +87,7 @@
     },
     {
       "name": "graphql",
-      "image": "uscictdocker/mentor-graphql:2.0.0-alpha.5",
+      "image": "uscictdocker/mentor-graphql:2.0.0-alpha.6",
       "essential": true,
       "memory": 1024,
       "mountPoints": [
