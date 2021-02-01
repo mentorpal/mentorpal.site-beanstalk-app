@@ -59,6 +59,10 @@
         {
           "name": "STATUS_URL_FORCE_HTTPS",
           "value": "true"
+        },
+        {
+          "name": "GRAPHQL_ENDPOINT",
+          "value": "http://graphql:3001/graphql"
         }
       ],
       "essential": true,
