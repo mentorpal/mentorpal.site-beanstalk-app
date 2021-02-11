@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   admin:
-    image: uscictdocker/mentor-admin:2.0.0-alpha.8
+    image: uscictdocker/mentor-admin:2.0.0-alpha.9
     environment:
       - NODE_ENV
       - GRAPHQL_ENDPOINT=http://graphql:3001/graphql
@@ -12,7 +12,7 @@ services:
         source: ./build/run/.env
         target: /app/.env
   classifier:
-    image: uscictdocker/mentor-classifier-api:2.0.0-alpha.3
+    image: uscictdocker/mentor-classifier-api:2.0.0-alpha.4
     depends_on:
       - redis
     links:
@@ -33,8 +33,18 @@ services:
         source: ./shared
         target: /app/shared
         read_only: true
+  chat:
+    image: uscictdocker/mentor-client:2.0.0-alpha.2
+    environment:
+      - MENTOR_API_URL=/classifier
+    depends_on:
+      - classifier
+    volumes:
+      - type: bind
+        source: ./build/run/.env
+        target: /app/.env
   graphql:
-    image: uscictdocker/mentor-graphql:2.0.0-alpha.6
+    image: uscictdocker/mentor-graphql:2.0.0-alpha.7
     ports:
       - 3001:3001
     environment:
@@ -52,6 +62,7 @@ services:
       - classifier
       - graphql
       - admin
+      - chat
     volumes:
       - type: bind
         source: ./nginx/nginx.conf
@@ -64,7 +75,7 @@ services:
     ports: 
       - "6379:6379"
   training:
-    image: uscictdocker/mentor-classifier:2.0.0-alpha.3
+    image: uscictdocker/mentor-classifier:2.0.0-alpha.4
     depends_on:
       - graphql
       - redis
