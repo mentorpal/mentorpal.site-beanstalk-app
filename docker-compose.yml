@@ -1,0 +1,87 @@
+version: '3.2'
+services:
+  admin:
+    image: uscictdocker/mentor-admin:2.0.0-alpha.8
+    environment:
+      - NODE_ENV
+      - GRAPHQL_ENDPOINT=http://graphql:3001/graphql
+    depends_on:
+      - graphql
+    volumes:
+      - type: bind
+        source: ./build/run/.env
+        target: /app/.env
+  classifier:
+    image: uscictdocker/mentor-classifier-api:2.0.0-alpha.3
+    depends_on:
+      - redis
+    links:
+      - redis
+    ports:
+      - 5000:5000
+    environment:
+      - GRAPHQL_ENDPOINT=http://graphql:3001/graphql
+      - MODEL_ROOT
+      - SHARED_ROOT
+      - STATUS_URL_FORCE_HTTPS
+    volumes:
+      - type: bind
+        source: ./models
+        target: /app/models
+        read_only: true
+      - type: bind
+        source: ./shared
+        target: /app/shared
+        read_only: true
+  graphql:
+    image: uscictdocker/mentor-graphql:2.0.0-alpha.6
+    ports:
+      - 3001:3001
+    environment:
+      - NODE_ENV
+      - MONGO_URI
+    volumes:
+      - type: bind
+        source: ./build/run/.env
+        target: /app/.env
+  nginx:
+    image: nginx:1-alpine
+    ports:
+      - 80:80
+    depends_on:
+      - classifier
+      - graphql
+      - admin
+    volumes:
+      - type: bind
+        source: ./nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+      - type: bind
+        source: ./nginx/conf.d
+        target: /etc/nginx/conf.d
+  redis:
+    image: "redis:6-alpine"
+    ports: 
+      - "6379:6379"
+  training:
+    image: uscictdocker/mentor-classifier:2.0.0-alpha.3
+    depends_on:
+      - graphql
+      - redis
+    entrypoint: /app/training_worker.sh
+    environment:
+      - GRAPHQL_ENDPOINT=http://graphql:3001/graphql
+      - LOG_LEVEL_CLASSIFIER=DEBUG
+      - MODEL_ROOT
+      - SHARED_ROOT
+    links:
+      - graphql
+      - redis
+    volumes:
+      - type: bind
+        source: ./models
+        target: /app/models
+      - type: bind
+        source: ./shared
+        target: /app/shared
+        read_only: true
