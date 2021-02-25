@@ -32,7 +32,7 @@ You probably want this repo to be private, and you can use whatever option to ma
 In a unix terminal, cd to the root of your repo clone and then execute:
 
 ```bash
-curl -s -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/mentorpal/aws-beanstalk-app/contents/bin/init.sh | sh
+curl -s -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/mentorpal/aws-beanstalk-app/contents/bin/install.sh | sh
 ```
 
 This will change the `upstream` remote for your clone to the mentorpal source repo, set up git lfs etc.
