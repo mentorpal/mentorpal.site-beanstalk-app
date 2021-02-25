@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-UPSTREAM=https://github.com/mentorpal/mentor-beanstalk-deployment.git
+UPSTREAM=https://github.com/mentorpal/aws-beanstalk-app.git
 
 git remote add upstream $UPSTREAM
 git lfs install
