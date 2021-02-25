@@ -8,7 +8,7 @@ The instructions below will guide you to set up an mentorpal site, running on `A
 
 ### Prerequisites
 
-You need an `AWS` account with your Elastic Beanstalk infrastructure already in place. You can use our [terraform template](https://github.com/mentorpal/terraform-mentorpal-aws-beanstalk) to build and maintain this infrastructure.
+You need an `AWS` account with your Elastic Beanstalk infrastructure already in place. You can use our [terraform template](https://github.com/mentorpal/aws-beanstalk-terraform) to build and maintain this infrastructure.
 
 ### Required Software
 
@@ -25,14 +25,14 @@ The goal is to allow you to manage your deployment without having to edit any co
 
 Do this the normal way in your github.com account. If you like name your repo the same as the domain name of your mentorpal site + a suffix, e.g. `mentorpal.yourdomain.org-beanstalk-app`
 
-You probably want this repo to be private, and you can use whatever option to make sure your repo has its `main` branch with a first commit (e.g. choose the option to create a README when you create the repo). Whatever commits you put in this repo will just be overwritten with tagged versions the mentorpal beanstalk-deployment repo.
+You probably want this repo to be private, and you can use whatever option to make sure your repo has its `main` branch with a first commit (e.g. choose the option to create a README when you create the repo). Whatever commits you put in this repo will just be overwritten with tagged versions the mentorpal aws-beanstalk-app repo.
 
-**Step 2. Initialize your repo as a fork-like clone mentorpal's [beanstalk-deployment](https://github.com/mentorpal/beanstalk-deployment.git) repo**
+**Step 2. Initialize your repo as a fork-like clone mentorpal's [aws-beanstalk-app](https://github.com/mentorpal/aws-beanstalk-app.git) repo**
 
 In a unix terminal, cd to the root of your repo clone and then execute:
 
 ```bash
-curl -s -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/mentorpal/beanstalk-deployment/contents/bin/init.sh | sh
+curl -s -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/mentorpal/aws-beanstalk-app/contents/bin/install.sh | sh
 ```
 
 This will change the `upstream` remote for your clone to the mentorpal source repo, set up git lfs etc.
@@ -54,7 +54,7 @@ You will need to configure all of the following secrets:
  - *EBS_ENV_NAME_PROD*
  - *EFS_FILE_SYSTEM_ID*
 
-If you don't know what any or all of these values should be, whoever setup your Elastic Beanstalk infrastructure in AWS should be able to configure them in github secrets for you, and/or see the [terraform template](https://github.com/mentorpal/terraform-mentorpal-aws-beanstalk)
+If you don't know what any or all of these values should be, whoever setup your Elastic Beanstalk infrastructure in AWS should be able to configure them in github secrets for you, and/or see the [terraform template](https://github.com/mentorpal/aws-beanstalk-terraform)
 
 ### Deploying a version of mentorpal to your site domain
 

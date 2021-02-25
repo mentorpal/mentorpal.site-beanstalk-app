@@ -36,7 +36,7 @@ build/deploy:
 	# into a build/deploy folder.
 	@if [ -z "$(EFS_FILE_SYSTEM_ID)" ] ; then \
 		echo "required env var EFS_FILE_SYSTEM_ID unset.";\
-		echo "See https://github.com/mentorpal/terraform-mentorpal-aws-beanstalk/blob/main/template/README.md"; \
+		echo "See https://github.com/mentorpal/aws-beanstalk-terraform/blob/main/template/README.md"; \
 		false ; \
 	fi
 	mkdir -p build/deploy
