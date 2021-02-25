@@ -7,6 +7,9 @@
 # so DO NOT run on a local clone 
 # where you have uncommitted changes
 
-__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-bash ${__dir}/init.sh
-bash ${__dir}/version_switch.sh
+UPSTREAM=https://github.com/mentorpal/aws-beanstalk-app.git
+git remote add upstream $UPSTREAM
+git lfs install
+git fetch upstream
+git reset --hard upstream/main
+bash ./bin/version_switch.sh
