@@ -33,7 +33,7 @@
     ],
     "containerDefinitions": [{
             "name": "admin",
-            "image": "uscictdocker/mentor-admin:2.0.0-alpha.13",
+            "image": "uscictdocker/mentor-admin:2.0.0-alpha.14",
             "essential": true,
             "memory": 1024,
             "mountPoints": [{
@@ -67,7 +67,7 @@
         },
         {
             "name": "classifier",
-            "image": "uscictdocker/mentor-classifier-api:2.0.0-alpha.7",
+            "image": "uscictdocker/mentor-classifier-api:2.0.0-alpha.8",
             "environment": [{
                     "name": "STATUS_URL_FORCE_HTTPS",
                     "value": "true"
@@ -157,7 +157,7 @@
         },
         {
             "name": "training",
-            "image": "uscictdocker/mentor-classifier:2.0.0-alpha.7",
+            "image": "uscictdocker/mentor-classifier:2.0.0-alpha.8",
             "entryPoint": [
                 "/app/training_worker.sh"
             ],
