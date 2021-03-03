@@ -50,7 +50,7 @@
         },
         {
             "name": "chat",
-            "image": "uscictdocker/mentor-client:2.0.0-alpha.12",
+            "image": "uscictdocker/mentor-client:2.0.0-alpha.13",
             "essential": true,
             "memory": 1024,
             "mountPoints": [{
