@@ -71,11 +71,11 @@ run: clean build/run/.env archive models
 	NODE_ENV=$(ENV) \
 	ENV=$(ENV) \
 	LOG_LEVEL_DIALOG=$(LOG_LEVEL_DIALOG) \
-	docker-compose up
+	docker compose up
 
 .PHONY: stop
 stop: 
-	docker-compose down --remove-orphans
+	docker compose down --remove-orphans
 
 LICENSE:
 	@echo "you must have a LICENSE file" 1>&2
@@ -106,7 +106,7 @@ test-run:
 	NODE_ENV=$(ENV) \
 	ENV=$(ENV) \
 	LOG_LEVEL_DIALOG=$(LOG_LEVEL_DIALOG) \
-	docker-compose -f docker-compose.yml -f docker-compose-e2e.yml up
+	docker compose -f docker compose.yml -f docker compose-e2e.yml up
 
 .PHONY: test-cypress
 test-cypress: 
