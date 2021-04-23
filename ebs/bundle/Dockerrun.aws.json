@@ -67,7 +67,7 @@
         },
         {
             "name": "classifier",
-            "image": "uscictdocker/mentor-classifier-api:2.1.0-alpha.12",
+            "image": "uscictdocker/mentor-classifier-api:3.0.0",
             "environment": [{
                     "name": "STATUS_URL_FORCE_HTTPS",
                     "value": "true"
@@ -101,7 +101,7 @@
         },
         {
             "name": "graphql",
-            "image": "uscictdocker/mentor-graphql:2.1.0-alpha.24",
+            "image": "uscictdocker/mentor-graphql:3.0.0-alpha.1",
             "essential": true,
             "memory": 1024,
             "mountPoints": [{
@@ -157,7 +157,7 @@
         },
         {
             "name": "training",
-            "image": "uscictdocker/mentor-classifier:2.1.0-alpha.12",
+            "image": "uscictdocker/mentor-classifier:3.0.0",
             "entryPoint": [
                 "/app/training_worker.sh"
             ],
