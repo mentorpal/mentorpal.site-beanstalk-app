@@ -73,6 +73,9 @@ run: clean build/run/.env archive models
 	LOG_LEVEL_DIALOG=$(LOG_LEVEL_DIALOG) \
 	docker-compose up
 
+run-%:
+	ENV=$* $(MAKE) run
+
 .PHONY: stop
 stop: 
 	docker-compose down --remove-orphans
