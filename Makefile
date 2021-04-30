@@ -94,6 +94,7 @@ LICENSE_HEADER:
 .PHONY: license
 license: LICENSE LICENSE_HEADER node_modules
 	npm run license:fix
+	$(MAKE) format
 
 .PHONY: test-license
 test-license: LICENSE LICENSE_HEADER node_modules

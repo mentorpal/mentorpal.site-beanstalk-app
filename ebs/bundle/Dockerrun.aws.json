@@ -1,268 +1,275 @@
 {
-    "AWSEBDockerrunVersion": 2,
-    "volumes": [{
-            "name": "classifier-models-efs",
-            "host": {
-                "sourcePath": "/efs/models"
-            }
-        },
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "classifier-models-efs",
+      "host": {
+        "sourcePath": "/efs/models"
+      }
+    },
+    {
+      "name": "classifier-shared",
+      "host": {
+        "sourcePath": "/var/app/current/classifier/shared"
+      }
+    },
+    {
+      "name": "nginx-volume-www",
+      "host": {
+        "sourcePath": "/var/app/current/nginx/www"
+      }
+    },
+    {
+      "name": "nginx-volume-nginx-conf",
+      "host": {
+        "sourcePath": "/var/app/current/nginx/nginx.conf"
+      }
+    },
+    {
+      "name": "nginx-volume-default-conf",
+      "host": {
+        "sourcePath": "/var/app/current/nginx/conf.d"
+      }
+    },
+    {
+      "name": "uploads-efs",
+      "host": {
+        "sourcePath": "/efs/uploads"
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "admin",
+      "image": "uscictdocker/mentor-admin:3.1.0-alpha.3",
+      "essential": true,
+      "memory": 128,
+      "mountPoints": [
         {
-            "name": "classifier-shared",
-            "host": {
-                "sourcePath": "/var/app/current/classifier/shared"
-            }
-        },
-        {
-            "name": "nginx-volume-www",
-            "host": {
-                "sourcePath": "/var/app/current/nginx/www"
-            }
-        },
-        {
-            "name": "nginx-volume-nginx-conf",
-            "host": {
-                "sourcePath": "/var/app/current/nginx/nginx.conf"
-            }
-        },
-        {
-            "name": "nginx-volume-default-conf",
-            "host": {
-                "sourcePath": "/var/app/current/nginx/conf.d"
-            }
-        },
-        {
-            "name": "uploads-efs",
-            "host": {
-                "sourcePath": "/efs/uploads"
-            }
-        },
-    ],
-    "containerDefinitions": [{
-            "name": "admin",
-            "image": "uscictdocker/mentor-admin:3.1.0-alpha.3",
-            "essential": true,
-            "memory": 128,
-            "mountPoints": [{
-                "sourceVolume": "awseb-logs-admin",
-                "containerPath": "/var/log/node"
-            }],
-            "environment": [{
-                "name": "GRAPHQL_ENDPOINT",
-                "value": "http://graphql:3001/graphql"
-            }],
-            "links": [
-                "graphql"
-            ]
-        },
-        {
-            "name": "chat",
-            "image": "uscictdocker/mentor-client:3.0.0",
-            "essential": true,
-            "memory": 128,
-            "mountPoints": [{
-                "sourceVolume": "awseb-logs-chat",
-                "containerPath": "/var/log/node"
-            }],
-            "environment": [{
-                "name": "MENTOR_API_URL",
-                "value": "/classifier"
-            }],
-            "links": [
-                "classifier"
-            ]
-        },
-        {
-            "name": "classifier",
-            "image": "uscictdocker/mentor-classifier-api:3.0.0",
-            "environment": [{
-                    "name": "STATUS_URL_FORCE_HTTPS",
-                    "value": "true"
-                },
-                {
-                    "name": "GRAPHQL_ENDPOINT",
-                    "value": "http://graphql:3001/graphql"
-                }
-            ],
-            "essential": true,
-            "links": [
-                "graphql",
-                "redis"
-            ],
-            "memory": 4096,
-            "mountPoints": [{
-                    "sourceVolume": "awseb-logs-classifier",
-                    "containerPath": "/var/log/flask"
-                },
-                {
-                    "sourceVolume": "classifier-models-efs",
-                    "containerPath": "/app/models",
-                    "readOnly": true
-                },
-                {
-                    "sourceVolume": "classifier-shared",
-                    "containerPath": "/app/shared",
-                    "readOnly": true
-                }
-            ]
-        },
-        {
-            "name": "graphql",
-            "image": "uscictdocker/mentor-graphql:3.0.0-alpha.2",
-            "essential": true,
-            "memory": 256,
-            "mountPoints": [{
-                "sourceVolume": "awseb-logs-graphql",
-                "containerPath": "/var/log/node"
-            }]
-        },
-        {
-            "name": "nginx",
-            "image": "nginx:1-alpine",
-            "essential": true,
-            "memory": 128,
-            "portMappings": [{
-                "hostPort": 80,
-                "containerPort": 80
-            }],
-            "links": [
-                "classifier",
-                "admin",
-                "graphql",
-                "chat"
-            ],
-            "mountPoints": [{
-                    "sourceVolume": "nginx-volume-www",
-                    "containerPath": "/etc/nginx/html",
-                    "readOnly": true
-                },
-                {
-                    "sourceVolume": "nginx-volume-nginx-conf",
-                    "containerPath": "/etc/nginx/nginx.conf",
-                    "readOnly": true
-                },
-                {
-                    "sourceVolume": "nginx-volume-default-conf",
-                    "containerPath": "/etc/nginx/conf.d",
-                    "readOnly": true
-                },
-                {
-                    "sourceVolume": "awseb-logs-nginx",
-                    "containerPath": "/var/log/nginx"
-                }
-            ]
-        },
-        {
-            "name": "redis",
-            "image": "redis:6-alpine",
-            "essential": true,
-            "memory": 128,
-            "portMappings": [{
-                "hostPort": 6379,
-                "containerPort": 6379
-            }]
-        },
-        {
-            "name": "training",
-            "image": "uscictdocker/mentor-classifier:3.0.0",
-            "entryPoint": [
-                "/app/training_worker.sh"
-            ],
-            "environment": [{
-                "name": "GRAPHQL_ENDPOINT",
-                "value": "http://graphql:3001/graphql"
-            }],
-            "essential": true,
-            "links": [
-                "graphql",
-                "redis"
-            ],
-            "memory": 2048,
-            "mountPoints": [{
-                    "sourceVolume": "awseb-logs-training",
-                    "containerPath": "/var/log/training"
-                },
-                {
-                    "sourceVolume": "classifier-models-efs",
-                    "containerPath": "/app/models"
-                },
-                {
-                    "sourceVolume": "classifier-shared",
-                    "containerPath": "/app/shared",
-                    "readOnly": true
-                }
-            ]
-        },
-        {
-            "name": "upload-redis",
-            "image": "redis:6-alpine",
-            "essential": true,
-            "memory": 128,
-            "portMappings": [{
-                "hostPort": 6379,
-                "containerPort": 6379
-            }]
-        },
-        {
-            "name": "upload-api",
-            "image": "uscictdocker/mentor-upload-api:0.1.0-alpha.8",
-            "environment": [{
-                    "name": "STATUS_URL_FORCE_HTTPS",
-                    "value": "true"
-                },
-                {
-                    "name": "CELERY_BROKER_URL",
-                    "value": "redis://upload-redis:6379/0"
-                },
-                {
-                    "name": "CELERY_RESULT_BACKEND",
-                    "value": "redis://upload-redis:6379/0"
-                }
-            ],
-            "essential": true,
-            "links": [
-                "redis"
-            ],
-            "memory": 2048,
-            "mountPoints": [{
-                    "sourceVolume": "awseb-logs-upload-api",
-                    "containerPath": "/var/log/flask"
-                },
-                {
-                    "sourceVolume": "uploads-efs",
-                    "containerPath": "/app/uploads"
-                }
-            ]
-        },
-        {
-            "name": "upload-worker",
-            "image": "uscictdocker/mentor-upload-worker:0.1.0-alpha.8",
-            "environment": [{
-                "name": "GRAPHQL_ENDPOINT",
-                "value": "http://graphql:3001/graphql"
-            },
-            {
-                "name": "CELERY_BROKER_URL",
-                "value": "redis://upload-redis:6379/0"
-            },
-            {
-                "name": "CELERY_RESULT_BACKEND",
-                "value": "redis://upload-redis:6379/0"
-            }],
-            "essential": true,
-            "links": [
-                "graphql",
-                "redis"
-            ],
-            "memory": 4096,
-            "mountPoints": [{
-                    "sourceVolume": "awseb-logs-upload-worker",
-                    "containerPath": "/var/log/upload-worker"
-                },
-                {
-                    "sourceVolume": "uploads-efs",
-                    "containerPath": "/app/uploads"
-                }
-            ]
+          "sourceVolume": "awseb-logs-admin",
+          "containerPath": "/var/log/node"
         }
-    ]
+      ],
+      "environment": [
+        {
+          "name": "GRAPHQL_ENDPOINT",
+          "value": "http://graphql:3001/graphql"
+        }
+      ],
+      "links": ["graphql"]
+    },
+    {
+      "name": "chat",
+      "image": "uscictdocker/mentor-client:3.0.0",
+      "essential": true,
+      "memory": 128,
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-chat",
+          "containerPath": "/var/log/node"
+        }
+      ],
+      "environment": [
+        {
+          "name": "MENTOR_API_URL",
+          "value": "/classifier"
+        }
+      ],
+      "links": ["classifier"]
+    },
+    {
+      "name": "classifier",
+      "image": "uscictdocker/mentor-classifier-api:3.0.0",
+      "environment": [
+        {
+          "name": "STATUS_URL_FORCE_HTTPS",
+          "value": "true"
+        },
+        {
+          "name": "GRAPHQL_ENDPOINT",
+          "value": "http://graphql:3001/graphql"
+        }
+      ],
+      "essential": true,
+      "links": ["graphql", "redis"],
+      "memory": 4096,
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-classifier",
+          "containerPath": "/var/log/flask"
+        },
+        {
+          "sourceVolume": "classifier-models-efs",
+          "containerPath": "/app/models",
+          "readOnly": true
+        },
+        {
+          "sourceVolume": "classifier-shared",
+          "containerPath": "/app/shared",
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "name": "graphql",
+      "image": "uscictdocker/mentor-graphql:3.0.0-alpha.2",
+      "essential": true,
+      "memory": 256,
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-graphql",
+          "containerPath": "/var/log/node"
+        }
+      ]
+    },
+    {
+      "name": "nginx",
+      "image": "nginx:1-alpine",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": ["classifier", "admin", "graphql", "chat"],
+      "mountPoints": [
+        {
+          "sourceVolume": "nginx-volume-www",
+          "containerPath": "/etc/nginx/html",
+          "readOnly": true
+        },
+        {
+          "sourceVolume": "nginx-volume-nginx-conf",
+          "containerPath": "/etc/nginx/nginx.conf",
+          "readOnly": true
+        },
+        {
+          "sourceVolume": "nginx-volume-default-conf",
+          "containerPath": "/etc/nginx/conf.d",
+          "readOnly": true
+        },
+        {
+          "sourceVolume": "awseb-logs-nginx",
+          "containerPath": "/var/log/nginx"
+        }
+      ]
+    },
+    {
+      "name": "redis",
+      "image": "redis:6-alpine",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 6379,
+          "containerPort": 6379
+        }
+      ]
+    },
+    {
+      "name": "training",
+      "image": "uscictdocker/mentor-classifier:3.0.0",
+      "entryPoint": ["/app/training_worker.sh"],
+      "environment": [
+        {
+          "name": "GRAPHQL_ENDPOINT",
+          "value": "http://graphql:3001/graphql"
+        }
+      ],
+      "essential": true,
+      "links": ["graphql", "redis"],
+      "memory": 2048,
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-training",
+          "containerPath": "/var/log/training"
+        },
+        {
+          "sourceVolume": "classifier-models-efs",
+          "containerPath": "/app/models"
+        },
+        {
+          "sourceVolume": "classifier-shared",
+          "containerPath": "/app/shared",
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "name": "upload-redis",
+      "image": "redis:6-alpine",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 6379,
+          "containerPort": 6379
+        }
+      ]
+    },
+    {
+      "name": "upload-api",
+      "image": "uscictdocker/mentor-upload-api:0.1.0-alpha.8",
+      "environment": [
+        {
+          "name": "STATUS_URL_FORCE_HTTPS",
+          "value": "true"
+        },
+        {
+          "name": "CELERY_BROKER_URL",
+          "value": "redis://upload-redis:6379/0"
+        },
+        {
+          "name": "CELERY_RESULT_BACKEND",
+          "value": "redis://upload-redis:6379/0"
+        }
+      ],
+      "essential": true,
+      "links": ["redis"],
+      "memory": 2048,
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-upload-api",
+          "containerPath": "/var/log/flask"
+        },
+        {
+          "sourceVolume": "uploads-efs",
+          "containerPath": "/app/uploads"
+        }
+      ]
+    },
+    {
+      "name": "upload-worker",
+      "image": "uscictdocker/mentor-upload-worker:0.1.0-alpha.8",
+      "environment": [
+        {
+          "name": "GRAPHQL_ENDPOINT",
+          "value": "http://graphql:3001/graphql"
+        },
+        {
+          "name": "CELERY_BROKER_URL",
+          "value": "redis://upload-redis:6379/0"
+        },
+        {
+          "name": "CELERY_RESULT_BACKEND",
+          "value": "redis://upload-redis:6379/0"
+        }
+      ],
+      "essential": true,
+      "links": ["graphql", "redis"],
+      "memory": 4096,
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-upload-worker",
+          "containerPath": "/var/log/upload-worker"
+        },
+        {
+          "sourceVolume": "uploads-efs",
+          "containerPath": "/app/uploads"
+        }
+      ]
+    }
+  ]
 }
