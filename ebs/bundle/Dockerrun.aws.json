@@ -29,13 +29,19 @@
             "host": {
                 "sourcePath": "/var/app/current/nginx/conf.d"
             }
-        }
+        },
+        {
+            "name": "uploads-efs",
+            "host": {
+                "sourcePath": "/efs/uploads"
+            }
+        },
     ],
     "containerDefinitions": [{
             "name": "admin",
-            "image": "uscictdocker/mentor-admin:3.0.0",
+            "image": "uscictdocker/mentor-admin:3.1.0-alpha.3",
             "essential": true,
-            "memory": 1024,
+            "memory": 128,
             "mountPoints": [{
                 "sourceVolume": "awseb-logs-admin",
                 "containerPath": "/var/log/node"
@@ -52,7 +58,7 @@
             "name": "chat",
             "image": "uscictdocker/mentor-client:3.0.0",
             "essential": true,
-            "memory": 1024,
+            "memory": 128,
             "mountPoints": [{
                 "sourceVolume": "awseb-logs-chat",
                 "containerPath": "/var/log/node"
@@ -82,7 +88,7 @@
                 "graphql",
                 "redis"
             ],
-            "memory": 8192,
+            "memory": 4096,
             "mountPoints": [{
                     "sourceVolume": "awseb-logs-classifier",
                     "containerPath": "/var/log/flask"
@@ -101,9 +107,9 @@
         },
         {
             "name": "graphql",
-            "image": "uscictdocker/mentor-graphql:3.0.0",
+            "image": "uscictdocker/mentor-graphql:3.0.0-alpha.2",
             "essential": true,
-            "memory": 1024,
+            "memory": 256,
             "mountPoints": [{
                 "sourceVolume": "awseb-logs-graphql",
                 "containerPath": "/var/log/node"
@@ -113,7 +119,7 @@
             "name": "nginx",
             "image": "nginx:1-alpine",
             "essential": true,
-            "memory": 512,
+            "memory": 128,
             "portMappings": [{
                 "hostPort": 80,
                 "containerPort": 80
@@ -149,7 +155,7 @@
             "name": "redis",
             "image": "redis:6-alpine",
             "essential": true,
-            "memory": 512,
+            "memory": 128,
             "portMappings": [{
                 "hostPort": 6379,
                 "containerPort": 6379
@@ -183,6 +189,78 @@
                     "sourceVolume": "classifier-shared",
                     "containerPath": "/app/shared",
                     "readOnly": true
+                }
+            ]
+        },
+        {
+            "name": "upload-redis",
+            "image": "redis:6-alpine",
+            "essential": true,
+            "memory": 128,
+            "portMappings": [{
+                "hostPort": 6379,
+                "containerPort": 6379
+            }]
+        },
+        {
+            "name": "upload-api",
+            "image": "uscictdocker/mentor-upload-api:0.1.0-alpha.8",
+            "environment": [{
+                    "name": "STATUS_URL_FORCE_HTTPS",
+                    "value": "true"
+                },
+                {
+                    "name": "CELERY_BROKER_URL",
+                    "value": "redis://upload-redis:6379/0"
+                },
+                {
+                    "name": "CELERY_RESULT_BACKEND",
+                    "value": "redis://upload-redis:6379/0"
+                }
+            ],
+            "essential": true,
+            "links": [
+                "redis"
+            ],
+            "memory": 2048,
+            "mountPoints": [{
+                    "sourceVolume": "awseb-logs-upload-api",
+                    "containerPath": "/var/log/flask"
+                },
+                {
+                    "sourceVolume": "uploads-efs",
+                    "containerPath": "/app/uploads"
+                }
+            ]
+        },
+        {
+            "name": "upload-worker",
+            "image": "uscictdocker/mentor-upload-worker:0.1.0-alpha.8",
+            "environment": [{
+                "name": "GRAPHQL_ENDPOINT",
+                "value": "http://graphql:3001/graphql"
+            },
+            {
+                "name": "CELERY_BROKER_URL",
+                "value": "redis://upload-redis:6379/0"
+            },
+            {
+                "name": "CELERY_RESULT_BACKEND",
+                "value": "redis://upload-redis:6379/0"
+            }],
+            "essential": true,
+            "links": [
+                "graphql",
+                "redis"
+            ],
+            "memory": 4096,
+            "mountPoints": [{
+                    "sourceVolume": "awseb-logs-upload-worker",
+                    "containerPath": "/var/log/upload-worker"
+                },
+                {
+                    "sourceVolume": "uploads-efs",
+                    "containerPath": "/app/uploads"
                 }
             ]
         }
