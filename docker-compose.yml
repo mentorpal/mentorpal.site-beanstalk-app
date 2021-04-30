@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   admin:
-    image: uscictdocker/mentor-admin:3.0.0-alpha.1
+    image: uscictdocker/mentor-admin:3.1.0-alpha.2
     environment:
       - NODE_ENV
       - GRAPHQL_ENDPOINT=http://graphql:3001/graphql
@@ -17,8 +17,6 @@ services:
       - redis
     links:
       - redis
-    ports:
-      - 5000:5000
     environment:
       - GRAPHQL_ENDPOINT=http://graphql:3001/graphql
       - MODEL_ROOT
@@ -45,8 +43,6 @@ services:
         target: /app/.env
   graphql:
     image: uscictdocker/mentor-graphql:3.0.0-alpha.2
-    ports:
-      - 3001:3001
     environment:
       - NODE_ENV
       - MONGO_URI
@@ -73,8 +69,6 @@ services:
         target: /etc/nginx/conf.d
   redis:
     image: "redis:6-alpine"
-    ports: 
-      - "6379:6379"
   training:
     image: uscictdocker/mentor-classifier:3.0.0
     depends_on:
@@ -97,24 +91,34 @@ services:
         source: ./shared
         target: /app/shared
         read_only: true
+  upload-redis:
+    # this is a hack, need to figure out 
+    # how to have multiple, independent
+    # pub/sub instances share a redis via celery
+    image: "redis:6-alpine"
   upload-api:
-    image: uscictdocker/mentor-upload-api:0.1.0-alpha.7
+    # image: uscictdocker/mentor-upload-api:0.1.0-alpha.7
+    image: mentor-upload-api:latest
     depends_on:
-      - redis
+      - upload-redis
+    environment:
+      - CELERY_BROKER_URL=redis://upload-redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://upload-redis:6379/0
     links:
-      - graphql
-      - redis
+      - upload-redis
     volumes:
       - type: bind
         source: ./uploads
         target: /app/uploads
   upload-worker:
-      image: uscictdocker/mentor-upload-worker:0.1.0-alpha.7
-      # image: mentor-upload-worker:latest
+      # image: uscictdocker/mentor-upload-worker:0.1.0-alpha.7
+      image: mentor-upload-worker:latest
       depends_on:
         - graphql
         - redis
       environment:
+        - CELERY_BROKER_URL=redis://upload-redis:6379/0
+        - CELERY_RESULT_BACKEND=redis://upload-redis:6379/0
         - GRAPHQL_ENDPOINT=http://graphql:3001/graphql
         - TRANSCRIBE_MODULE_PATH=transcribe_aws
       links:
