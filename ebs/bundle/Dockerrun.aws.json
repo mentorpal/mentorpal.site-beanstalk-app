@@ -215,7 +215,7 @@
         }
       ],
       "essential": true,
-      "links": ["redis"],
+      "links": ["upload-redis"],
       "memory": 2048,
       "mountPoints": [
         {
@@ -246,7 +246,7 @@
         }
       ],
       "essential": true,
-      "links": ["graphql", "redis"],
+      "links": ["graphql", "upload-redis"],
       "memory": 4096,
       "mountPoints": [
         {
