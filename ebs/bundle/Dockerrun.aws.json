@@ -131,7 +131,7 @@
           "containerPort": 80
         }
       ],
-      "links": ["admin", "classifier", "chat", "graphql"],
+      "links": ["admin", "classifier", "chat", "graphql", "upload-api"],
       "mountPoints": [
         {
           "sourceVolume": "nginx-volume-www",
