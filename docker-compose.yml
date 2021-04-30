@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   admin:
-    image: uscictdocker/mentor-admin:3.0.0
+    image: uscictdocker/mentor-admin:3.0.0-alpha.1
     environment:
       - NODE_ENV
       - GRAPHQL_ENDPOINT=http://graphql:3001/graphql
@@ -44,7 +44,7 @@ services:
         source: ./build/run/.env
         target: /app/.env
   graphql:
-    image: uscictdocker/mentor-graphql:3.0.0
+    image: uscictdocker/mentor-graphql:3.0.0-alpha.2
     ports:
       - 3001:3001
     environment:
@@ -59,10 +59,11 @@ services:
     ports:
       - 80:80
     depends_on:
-      - classifier
-      - graphql
       - admin
       - chat
+      - classifier
+      - graphql
+      - upload-api
     volumes:
       - type: bind
         source: ./nginx/nginx.conf
@@ -96,3 +97,33 @@ services:
         source: ./shared
         target: /app/shared
         read_only: true
+  upload-api:
+    image: uscictdocker/mentor-upload-api:0.1.0-alpha.7
+    depends_on:
+      - redis
+    links:
+      - graphql
+      - redis
+    volumes:
+      - type: bind
+        source: ./uploads
+        target: /app/uploads
+  upload-worker:
+      image: uscictdocker/mentor-upload-worker:0.1.0-alpha.7
+      # image: mentor-upload-worker:latest
+      depends_on:
+        - graphql
+        - redis
+      environment:
+        - GRAPHQL_ENDPOINT=http://graphql:3001/graphql
+        - TRANSCRIBE_MODULE_PATH=transcribe_aws
+      links:
+        - graphql
+        - redis
+      volumes:
+        - type: bind
+          source: ./build/run/.env
+          target: /app/.env
+        - type: bind
+          source: ./uploads
+          target: /app/uploads
