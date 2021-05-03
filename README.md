@@ -77,7 +77,7 @@ The `./version publish` command will push a tag from upstream to your site's git
 
 If you are developing on the app (as opposed to just deploying releases), first make sure you don't have any uncommitted/unstashed changes with `git status`
 
-To switch the local-clone version to a release from [aws-beanstalk-terraform](https://github.com/mentorpal/aws-beanstalk-terraform) do:
+To switch the local-clone version to a release from [aws-beanstalk-app](https://github.com/mentorpal/aws-beanstalk-app) do:
 
 ```bash
 ./version switch <tag>
@@ -92,7 +92,7 @@ To switch the local-clone version to a release from [aws-beanstalk-terraform](ht
 
 ## Developing New Releases
 
-To develop new releases, you will usually be working in a repo clone of a site that you own but pushing branches and changes to the upstream [aws-beanstalk-terraform](https://github.com/mentorpal/aws-beanstalk-terraform).
+To develop new releases, you will usually be working in a repo clone of a site that you own but pushing branches and changes to the upstream [aws-beanstalk-app](https://github.com/mentorpal/aws-beanstalk-app).
 
 As an example, to set up a new branch from `upstream/main` you could follow these steps:
 
@@ -111,7 +111,7 @@ When you are ready to publish your changes to your site to test...
 git push upstream <my_branch>
 ```
 
-2. On [aws-beanstalk-terraform](https://github.com/mentorpal/aws-beanstalk-terraform), create a release tag, e.g. `3.1.0-alpha.3`
+2. On [aws-beanstalk-app](https://github.com/mentorpal/aws-beanstalk-app), create a release tag, e.g. `3.1.0-alpha.3`
 
 3. back on your local machine, use the `version` tool to deploy your new release, e.g.
 
