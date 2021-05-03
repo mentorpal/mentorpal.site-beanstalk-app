@@ -32,7 +32,7 @@ You probably want this repo to be private, and you can use whatever option to ma
 In a unix terminal, cd to the root of your repo clone and then execute:
 
 ```bash
-curl -s -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/mentorpal/aws-beanstalk-app/contents/bin/install.sh | sh
+curl -s -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/mentorpal/aws-beanstalk-app/contents/install.sh | sh
 ```
 
 This will change the `upstream` remote for your clone to the mentorpal source repo, set up git lfs etc.
@@ -58,39 +58,69 @@ If you don't know what any or all of these values should be, whoever setup your 
 
 ### Deploying a version of mentorpal to your site domain
 
-Once your repo is configured per above, follow these steps to deploy a version.
-
-### Step 1. switch your clone to the desired version (or latest stable)
-
-To switch your clone to the latest stable version of mentorpal, open a terminal to the root of your repo and do
+To publish a specific tagged release do:
 
 ```bash
-sh ./bin/version_switch.sh
+./version publish <tag>
 ```
 
-...if you want a specific released version pass that version tag to the above, e.g.
+...to publish the latest version do:
 
 ```bash
-sh ./bin/version_switch.sh 1.1.0
+./version publish --latest
 ```
 
-### Step 2. push to main
+The `./version publish` command will push a tag from upstream to your site's github repo. If the github config described above is complete and valid, this will trigger [github](https://github.com/features/actions) in your repo to deploy the tag to your configured AWS Elastic Beanstalk Env. You should see the deploy action running at `https://github.com/mentorpal/{YOUR_REPO}/actions`
 
-This needs to be a force push, e.g.
 
+### Switching your local clone to a released version of mentorpal
+
+If you are developing on the app (as opposed to just deploying releases), first make sure you don't have any uncommitted/unstashed changes with `git status`
+
+To switch the local-clone version to a release from [aws-beanstalk-terraform](https://github.com/mentorpal/aws-beanstalk-terraform) do:
+
+```bash
+./version switch <tag>
 ```
-git push --force
+
+...to switch to the latest version do:
+
+```bash
+./version switch --latest
 ```
 
-### Step 3. Create a release tag to trigger the deployment
 
-Github actions will deploy to your site when you [create a release](https://docs.github.com/en/github/administering-a-repository/managing-releases-in-a-repository#creating-a-release) that matches the expected semver format, e.g. `1.0.0` or `1.2.1`. The deploy job will also run on tags that have alphanumeric suffixes like `1.3.1-rc1`. In practice, it's hard to think of a case where the release you create in your repo wouldn't have the same version number as the tag you're releasing.
+## Developing New Releases
 
-As soon as you create a release in the format described above, the deployment action should trigger in github actions.
+To develop new releases, you will usually be working in a repo clone of a site that you own but pushing branches and changes to the upstream [aws-beanstalk-terraform](https://github.com/mentorpal/aws-beanstalk-terraform).
 
+As an example, to set up a new branch from `upstream/main` you could follow these steps:
+
+```bash
+git fetch upstream
+git checkout -b upstream/main my-new-branch
+```
+
+...then make changes and run the environment to test locally as describe above in this document.
+
+When you are ready to publish your changes to your site to test...
+
+1. push your branch to upstream, e.g.
+
+```bash
+git push upstream <my_branch>
+```
+
+2. On [aws-beanstalk-terraform](https://github.com/mentorpal/aws-beanstalk-terraform), create a release tag, e.g. `3.1.0-alpha.3`
+
+3. back on your local machine, use the `version` tool to deploy your new release, e.g.
+
+```bash
+./version publish 3.1.0-alpha.3
+```
 
 ## FAQ
 
 ### Why can't I just fork this repo for my site?
 
-Github actions don't run on forked repositories
+We need a system where a github account can have multiple 'fork-like' copies of the mentorpal app deployment, one for each site domain.
