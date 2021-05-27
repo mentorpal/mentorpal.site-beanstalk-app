@@ -98,7 +98,7 @@ services:
     # pub/sub instances share a redis via celery
     image: "redis:6-alpine"
   upload-api:
-    image: uscictdocker/mentor-upload-api:4.0.0-alpha.4
+    image: uscictdocker/mentor-upload-api:4.0.0-alpha.5
     # image: mentor-upload-api:latest
     depends_on:
       - upload-redis
@@ -112,7 +112,7 @@ services:
         source: ./uploads
         target: /app/uploads
   upload-worker:
-      image: uscictdocker/mentor-upload-worker:4.0.0-alpha.4
+      image: uscictdocker/mentor-upload-worker:4.0.0-alpha.5
       depends_on:
         - graphql
         - redis
