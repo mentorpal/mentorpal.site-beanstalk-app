@@ -197,7 +197,7 @@
     },
     {
       "name": "upload-api",
-      "image": "uscictdocker/mentor-upload-api:4.0.0-alpha.5",
+      "image": "uscictdocker/mentor-upload-api:4.0.0-alpha.6",
       "environment": [
         {
           "name": "STATUS_URL_FORCE_HTTPS",
@@ -228,7 +228,7 @@
     },
     {
       "name": "upload-worker",
-      "image": "uscictdocker/mentor-upload-worker:4.0.0-alpha.5",
+      "image": "uscictdocker/mentor-upload-worker:4.0.0-alpha.6",
       "environment": [
         {
           "name": "GRAPHQL_ENDPOINT",
