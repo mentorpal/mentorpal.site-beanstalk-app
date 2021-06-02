@@ -32,7 +32,7 @@ services:
         target: /app/shared
         read_only: true
   chat:
-    image: uscictdocker/mentor-client:4.0.0-alpha.3
+    image: uscictdocker/mentor-client:4.0.0-alpha.4
     environment:
       - MENTOR_API_URL=/classifier
     depends_on:
@@ -42,7 +42,7 @@ services:
         source: ./build/run/.env
         target: /app/.env
   graphql:
-    image: uscictdocker/mentor-graphql:4.0.0-alpha.3
+    image: uscictdocker/mentor-graphql:4.0.0-alpha.4
     environment:
       - NODE_ENV
       - MONGO_URI
