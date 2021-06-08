@@ -66,8 +66,11 @@ archive:
 models:
 	mkdir -p models
 
+uploads:
+	mkdir -p uploads
+
 .PHONY: run
-run: clean build/run/.env archive models
+run: clean build/run/.env archive models uploads
 	NODE_ENV=$(ENV) \
 	ENV=$(ENV) \
 	LOG_LEVEL_DIALOG=$(LOG_LEVEL_DIALOG) \
@@ -91,6 +94,7 @@ LICENSE_HEADER:
 .PHONY: license
 license: LICENSE LICENSE_HEADER node_modules
 	npm run license:fix
+	$(MAKE) format
 
 .PHONY: test-license
 test-license: LICENSE LICENSE_HEADER node_modules

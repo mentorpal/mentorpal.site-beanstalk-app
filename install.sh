@@ -9,7 +9,7 @@
 
 UPSTREAM=https://github.com/mentorpal/aws-beanstalk-app.git
 git remote add upstream $UPSTREAM
-git lfs install
+git lfs install --force --skip-smudge
 git fetch upstream
 git reset --hard upstream/main
-bash ./bin/version_switch.sh
+bash ./version switch --latest

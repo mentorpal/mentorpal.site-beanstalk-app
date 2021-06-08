@@ -13,6 +13,7 @@ docker-compose.override-images.yml
 .venv
 .env
 .mentorpal*
-models
 archive
+models
+uploads
 
