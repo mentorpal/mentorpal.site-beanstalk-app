@@ -41,7 +41,7 @@
   "containerDefinitions": [
     {
       "name": "admin",
-      "image": "uscictdocker/mentor-admin:4.0.0",
+      "image": "uscictdocker/mentor-admin:4.1.0-alpha.3",
       "essential": true,
       "memory": 256,
       "mountPoints": [
@@ -77,7 +77,7 @@
     },
     {
       "name": "classifier",
-      "image": "uscictdocker/mentor-classifier-api:4.0.0",
+      "image": "uscictdocker/mentor-classifier-api:4.1.0-alpha.1",
       "environment": [
         {
           "name": "STATUS_URL_FORCE_HTTPS",
@@ -110,7 +110,7 @@
     },
     {
       "name": "graphql",
-      "image": "uscictdocker/mentor-graphql:4.0.0",
+      "image": "uscictdocker/mentor-graphql:4.1.0-alpha.3",
       "essential": true,
       "memory": 512,
       "mountPoints": [
@@ -197,7 +197,7 @@
     },
     {
       "name": "upload-api",
-      "image": "uscictdocker/mentor-upload-api:4.0.0",
+      "image": "uscictdocker/mentor-upload-api:4.1.0-alpha.2",
       "environment": [
         {
           "name": "STATUS_URL_FORCE_HTTPS",
@@ -228,7 +228,7 @@
     },
     {
       "name": "upload-worker",
-      "image": "uscictdocker/mentor-upload-worker:4.0.0",
+      "image": "uscictdocker/mentor-upload-worker:4.1.0-alpha.2",
       "environment": [
         {
           "name": "GRAPHQL_ENDPOINT",
