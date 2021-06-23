@@ -213,7 +213,7 @@
         }
       ],
       "essential": true,
-      "links": ["upload-redis"],
+      "links": ["graphql", "upload-redis"],
       "memory": 2048,
       "mountPoints": [
         {
