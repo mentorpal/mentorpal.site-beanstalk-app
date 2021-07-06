@@ -1,8 +1,6 @@
 {
   "activation": "gelu",
-  "architectures": [
-    "DistilBertModel"
-  ],
+  "architectures": ["DistilBertModel"],
   "attention_dropout": 0.1,
   "dim": 768,
   "dropout": 0.1,
