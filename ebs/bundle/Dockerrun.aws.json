@@ -43,7 +43,7 @@
       "name": "admin",
       "image": "uscictdocker/mentor-admin:4.1.0-alpha.18",
       "essential": true,
-      "memory": 256,
+      "memory": 128,
       "mountPoints": [
         {
           "sourceVolume": "awseb-logs-admin",
@@ -61,7 +61,7 @@
       "name": "chat",
       "image": "uscictdocker/mentor-client:4.1.0-alpha.3",
       "essential": true,
-      "memory": 256,
+      "memory": 128,
       "mountPoints": [
         {
           "sourceVolume": "awseb-logs-chat",
@@ -77,15 +77,19 @@
     },
     {
       "name": "classifier",
-      "image": "uscictdocker/mentor-classifier-api:4.0.1-alpha.1",
+      "image": "uscictdocker/mentor-classifier-api:4.2.0-alpha.1",
       "environment": [
         {
-          "name": "STATUS_URL_FORCE_HTTPS",
-          "value": "true"
+          "name": "CLASSIFIER_ARCH",
+          "value": "mentor_classifier.arch.lr_transformer"
         },
         {
           "name": "GRAPHQL_ENDPOINT",
           "value": "http://graphql:3001/graphql"
+        },
+        {
+          "name": "STATUS_URL_FORCE_HTTPS",
+          "value": "true"
         }
       ],
       "essential": true,
@@ -158,13 +162,17 @@
       "name": "redis",
       "image": "redis:6-alpine",
       "essential": true,
-      "memory": 512
+      "memory": 256
     },
     {
       "name": "training",
-      "image": "uscictdocker/mentor-classifier:4.0.1-alpha.1",
+      "image": "uscictdocker/mentor-classifier:4.2.0-alpha.1",
       "entryPoint": ["/app/training_worker.sh"],
       "environment": [
+        {
+          "name": "CLASSIFIER_ARCH",
+          "value": "mentor_classifier.arch.lr_transformer"
+        },
         {
           "name": "GRAPHQL_ENDPOINT",
           "value": "http://graphql:3001/graphql"
@@ -172,7 +180,7 @@
       ],
       "essential": true,
       "links": ["graphql", "redis"],
-      "memory": 2048,
+      "memory": 3072,
       "mountPoints": [
         {
           "sourceVolume": "awseb-logs-training",
@@ -193,7 +201,7 @@
       "name": "upload-redis",
       "image": "redis:6-alpine",
       "essential": true,
-      "memory": 512
+      "memory": 256
     },
     {
       "name": "upload-api",
@@ -245,7 +253,7 @@
       ],
       "essential": true,
       "links": ["graphql", "upload-redis"],
-      "memory": 4096,
+      "memory": 3072,
       "mountPoints": [
         {
           "sourceVolume": "awseb-logs-upload-worker",
