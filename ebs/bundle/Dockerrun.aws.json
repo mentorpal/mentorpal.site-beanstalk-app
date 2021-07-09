@@ -180,7 +180,7 @@
       ],
       "essential": true,
       "links": ["graphql", "redis"],
-      "memory": 3072,
+      "memory": 4096,
       "mountPoints": [
         {
           "sourceVolume": "awseb-logs-training",
