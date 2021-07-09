@@ -77,7 +77,7 @@
     },
     {
       "name": "classifier",
-      "image": "uscictdocker/mentor-classifier-api:4.2.0-alpha.2",
+      "image": "uscictdocker/mentor-classifier-api:4.2.0-alpha.3",
       "environment": [
         {
           "name": "CLASSIFIER_ARCH",
@@ -166,7 +166,7 @@
     },
     {
       "name": "training",
-      "image": "uscictdocker/mentor-classifier:4.2.0-alpha.2",
+      "image": "uscictdocker/mentor-classifier:4.2.0-alpha.3",
       "entryPoint": ["/app/training_worker.sh"],
       "environment": [
         {
